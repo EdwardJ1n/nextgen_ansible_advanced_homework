@@ -27,20 +27,19 @@
 
 
 - name: Gather database facts
-  hosts: database_servers
+  hosts: db
   gather_facts: true
 
   tasks: []
 
 - name: Setup Repos
-  hosts: app_servers:load_balancers:database_servers
+  hosts: apps:frontend:db
   gather_facts: false
   become: true
   tags:
     - common
 
   tasks:
-
     - name: Copy repo file
       copy:
         src: ../files/open_three-tier-app.repo
