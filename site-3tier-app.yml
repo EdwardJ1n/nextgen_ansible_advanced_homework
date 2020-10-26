@@ -5,6 +5,9 @@
   gather_facts: false
   become: false
 
+  vars: 
+    GUID: 52fd
+
   tasks:
 
     - name: Fetch Instance Info
@@ -17,7 +20,7 @@
       add_host:
         name: "{{ item.public_v4 }}"
         ansible_user: cloud-user
-        ansible_ssh_private_key_file: "~/.ssh/test_id_rsa"
+        ansible_ssh_private_key_file: "/root/.ssh/openstack.pem"
         group:
           - "{{ item.metadata.group }}"
           - "{{ item.metadata.deployment_name }}"
