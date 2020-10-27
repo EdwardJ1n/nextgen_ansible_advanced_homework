@@ -4,7 +4,7 @@
 - name: Create DB instances
   os_server:
     cloud: openstack
-    name: db1
+    name: appdb1
     image: rhel-guest
     key_name: ansible_ssh
     flavor: m1.medium
@@ -68,7 +68,7 @@
     wait: true
     timeout: 200
   loop: 
-    - db1
+    - appdb1
     - frontend1
     - app1
     - app2
