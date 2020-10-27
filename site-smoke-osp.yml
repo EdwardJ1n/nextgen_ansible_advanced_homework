@@ -23,6 +23,7 @@
     delay: 1
     register: result
     delegate_to: localhost
+    ignore_errors: True
 
 #  - name: Fail if 'Ansible has done its job' is not in the page content
 #    fail:
