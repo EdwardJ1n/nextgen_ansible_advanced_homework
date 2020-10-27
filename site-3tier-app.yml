@@ -5,9 +5,6 @@
   gather_facts: false
   become: false
 
-  vars: 
-    GUID: 52fd
-
   tasks:
 
     - name: Fetch Instance Info
