@@ -8,7 +8,7 @@
   - name: Add host group
     add_host:
       name: "{{ item.id }}"
-      group: osp_instance_group
+      group: osp_instance_id_group
     with_items: "{{result.openstack_servers}}"
 
   - debug: var=groups
