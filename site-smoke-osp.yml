@@ -2,10 +2,30 @@
   gather_facts: false
   tasks:
   - name: OpenStack servers
-  - name: Curl website
+    os_server_info:
+      cloud: openstack
+    register: result
 
-  - name: Fail if 'Ansible has done its job' is not in the page content
-    fail:
-    when: "'Ansible has done its job' not in webpage.results[0].content"
-    tags:
-      - osp.smoke
+  - name: Add host group
+    add_host:
+      name: "{{ item.public_v4 }}"
+      group: "{{ item.metadata.group }}"
+    with_items: "{{result.openstack_servers}}"
+
+  - debug: var=groups
+
+  - name: Curl website
+    uri:
+      url: "http://{{ groups.frontend[0] }}/ping"
+      return_content: yes
+    until: '"alive" in result.content'
+    retries: 10
+    delay: 1
+    register: result
+    delegate_to: localhost
+
+#  - name: Fail if 'Ansible has done its job' is not in the page content
+#    fail:
+#    when: "'Ansible has done its job' not in webpage.results[0].content"
+#    tags:
+#      - osp.smoke
