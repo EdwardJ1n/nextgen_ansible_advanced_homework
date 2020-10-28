@@ -3,18 +3,12 @@
   hosts: localhost
   gather_facts: false
 
-  vars:
-    aws:
-      access_key: '{{ lookup("env", "AWS_ACCESS_KEY_ID") }}'
-      secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
-      security_token: '{{ lookup("env", "AWS_SECURITY_TOKEN") }}'
-
   tasks:
   - name: Gather Facts from aws
     ec2_instance_facts:
-       region: us-east-1
-       filters:
-         "tag:owner": xujin@redhat.com
+      region: us-east-1
+      filters:
+        "tag:owner": xujin@redhat.com
     register: ec2_instances
   
   - name: Print registered variable ec2_instances
@@ -31,28 +25,25 @@
   #     - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
   #     - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
 
-#  - pause:
+  - name: Create In Memory Inventory
+    add_host:
+       group: "{{item.0}}"
+       hostname: "{{item.2}}"
+       ansible_host: "{{item.1}}"
+       ansible_ssh_private_key_file: ~/.ssh/cloud-user.pem
+       ansible_ssh_user: cloud-user
+    with_together:
+      - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
+      - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
+      - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
+  - debug: var=groups
 
-  # - name: Create In Memory Inventory
-  #   add_host:
-  #      group: "{{item.0}}"
-  #      hostname: "{{item.2}}"
-  #      ansible_host: "{{item.1}}"
-  #      ansible_ssh_private_key_file: ~/.ssh/cloud-user.pem
-  #      ansible_ssh_user: cloud-user
-  #   with_together:
-  #     - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
-  #     - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
-  #     - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
-  # - debug: var=groups
 
-#  - pause:
-
-  # - name: Test play against In-memory inventory
-  #   hosts: bastion
-  #   gather_facts: false
-  #   tasks:
-  #     - ping:
-  #       register: ping_output
-  #     - debug: var=ping_output
+  - name: Test play against In-memory inventory
+    hosts: bastion
+    gather_facts: false
+    tasks:
+      - ping:
+        register: ping_output
+      - debug: var=ping_output
 ...
