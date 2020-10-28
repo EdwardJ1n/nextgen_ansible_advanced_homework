@@ -35,6 +35,11 @@
 
   - debug: var=groups
 
+- name: Test play against In-memory inventory
+  hosts: apps frontend db
+  gather_facts: false
+  tasks:
+    - ping:
 
 # - name: Setup Repos
 #   hosts: apps:frontend:db
