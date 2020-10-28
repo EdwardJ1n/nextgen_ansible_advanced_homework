@@ -22,16 +22,35 @@
       - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
 
   - name: Create apps group
-    add_host: hostname={{ item }} groups=apps
-    with_items: groups['tag_AnsibleGroup_apps']
+    add_host: hostname="{{ item }}" groups=apps
+    with_items: "{{ groups.tag_AnsibleGroup_apps' }}"
 
   - name: Create frontend group
-    add_host: hostname={{ item }} groups=frontend
-    with_items: groups['tag_AnsibleGroup_frontends']
+    add_host: hostname="{{ item }}" groups=frontend
+    with_items: "{{ groups.tag_AnsibleGroup_frontends' }}"
 
   - name: Create db group
-    add_host: hostname={{ item }} groups=db
-    with_items: groups['tag_AnsibleGroup_appdbs']
+    add_host: hostname="{{ item }}" groups=db
+    with_items: "{{ groups.tag_AnsibleGroup_appdbs' }}"
+
   - debug: var=groups
+
+
+# - name: Setup Repos
+#   hosts: apps:frontend:db
+#   gather_facts: false
+#   become: true
+#   tags:
+#     - common
+
+#   tasks:
+#     - name: Copy repo file
+#       copy:
+#         src: ../files/open_three-tier-app.repo
+#         dest: /etc/yum.repos.d/open_three-tier-app.repo
+ 
+# - import_playbook: provision_database_tier.yml
+# - import_playbook: provision_app_tier.yml
+# - import_playbook: provision_load_balancer_tier.yml
 
 ...
