@@ -39,11 +39,11 @@
   - debug: var=groups
 
 
-  - name: Test play against In-memory inventory
-    hosts: bastion
-    gather_facts: false
-    tasks:
-      - ping:
-        register: ping_output
-      - debug: var=ping_output
+- name: Test play against In-memory inventory
+  hosts: bastion
+  gather_facts: false
+  tasks:
+    - ping:
+      register: ping_output
+    - debug: var=ping_output
 ...
