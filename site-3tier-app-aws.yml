@@ -4,22 +4,22 @@
   gather_facts: false
 
   tasks:
-  - name: Gather Facts from aws
-    ec2_instance_facts:
-      region: us-east-1
-      filters:
-        "tag:owner": xujin@redhat.com
-    register: ec2_instances
+  # - name: Gather Facts from aws
+  #   ec2_instance_facts:
+  #     region: us-east-1
+  #     filters:
+  #       "tag:owner": xujin@redhat.com
+  #   register: ec2_instances
 
-  - name: Create In Memory Inventory
-    add_host:
-       group: "{{item.0}}"
-       hostname: "{{item.2}}"
-       ansible_host: "{{item.1}}"
-    with_together:
-      - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
-      - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
-      - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
+  # - name: Create In Memory Inventory
+  #   add_host:
+  #      group: "{{item.0}}"
+  #      hostname: "{{item.2}}"
+  #      ansible_host: "{{item.1}}"
+  #   with_together:
+  #     - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
+  #     - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
+  #     - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
 
   - name: Refresh inventory to ensure new instances exist in inventory
     meta: refresh_inventory
