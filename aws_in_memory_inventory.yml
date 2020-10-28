@@ -23,7 +23,7 @@
 
   - name: Refresh inventory to ensure new instances exist in inventory
     meta: refresh_inventory
-    
+
   - name: Create apps group
     add_host: hostname="{{ item }}" groups=apps
     with_items: "{{ groups.tag_AnsibleGroup_apps }}"
@@ -35,6 +35,14 @@
   - name: Create db group
     add_host: hostname="{{ item }}" groups=db
     with_items: "{{ groups.tag_AnsibleGroup_appdbs }}"
+
+- name: Test play against In-memory inventory
+  hosts: apps frontend db
+  gather_facts: false
+  tasks:
+    - ping:
+      register: ping_output
+    - debug: var=ping_output
 
 # - name: Setup Repos
 #   hosts: apps:frontend:db
