@@ -41,7 +41,7 @@
 
 - name: Test play against In-memory inventory
 #  hosts: bastion
-  hosts: localhost
+  hosts: tag_AnsibleGroup_apps tag_AnsibleGroup_appdbs tag_AnsibleGroup_frontends
   gather_facts: false
   tasks:
     - ping:
