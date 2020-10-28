@@ -23,15 +23,15 @@
 
   - name: Create apps group
     add_host: hostname="{{ item }}" groups=apps
-    with_items: "{{ groups.tag_AnsibleGroup_apps' }}"
+    with_items: "{{ groups.tag_AnsibleGroup_apps }}"
 
   - name: Create frontend group
     add_host: hostname="{{ item }}" groups=frontend
-    with_items: "{{ groups.tag_AnsibleGroup_frontends' }}"
+    with_items: "{{ groups.tag_AnsibleGroup_frontends }}"
 
   - name: Create db group
     add_host: hostname="{{ item }}" groups=db
-    with_items: "{{ groups.tag_AnsibleGroup_appdbs' }}"
+    with_items: "{{ groups.tag_AnsibleGroup_appdbs }}"
 
   - debug: var=groups
 
