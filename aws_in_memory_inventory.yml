@@ -30,8 +30,8 @@
        group: "{{item.0}}"
        hostname: "{{item.2}}"
        ansible_host: "{{item.1}}"
-       ansible_ssh_private_key_file: ~/.ssh/cloud-user.pem
-       ansible_ssh_user: cloud-user
+      #  ansible_ssh_private_key_file: ~/.ssh/cloud-user.pem
+      #  ansible_ssh_user: cloud-user
     with_together:
       - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
       - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
@@ -40,7 +40,8 @@
 
 
 - name: Test play against In-memory inventory
-  hosts: bastion
+#  hosts: bastion
+  hosts: localhost
   gather_facts: false
   tasks:
     - ping:
