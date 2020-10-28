@@ -2,6 +2,13 @@
 - name: Test on AWS
   hosts: localhost
   gather_facts: false
+
+  vars:
+    aws:
+      access_key: '{{ lookup("env", "AWS_ACCESS_KEY_ID") }}'
+      secret_key: '{{ lookup("env", "AWS_SECRET_ACCESS_KEY") }}'
+      security_token: '{{ lookup("env", "AWS_SECURITY_TOKEN") }}'
+
   tasks:
   - name: Gather Facts from aws
     ec2_instance_facts:
