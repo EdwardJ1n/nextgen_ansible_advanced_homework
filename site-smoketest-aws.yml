@@ -1,7 +1,19 @@
+---
+- name: Deploy 3 tier app on AWS
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Refresh inventory to ensure new instances exist in inventory
+    meta: refresh_inventory
+
+  - name: Create frontend group
+    add_host: hostname="{{ item }}" groups=frontend
+    with_items: "{{ groups.tag_AnsibleGroup_frontends }}"
+
 - hosts: frontend
   gather_facts: false
   tasks:
-
   - name: Curl website
     uri:
       url: "http://{{ groups.frontend[0] }}/ping"
