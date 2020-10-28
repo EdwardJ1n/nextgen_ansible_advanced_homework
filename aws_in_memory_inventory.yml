@@ -7,7 +7,7 @@
     ec2_instance_facts:
        region: us-east-1
        filters:
-         "tag:owner": xxxxx@xxxx.com
+         "tag:owner": xujin@redhat.com
     register: ec2_instances
   
   - name: Print registered variable ec2_instances
