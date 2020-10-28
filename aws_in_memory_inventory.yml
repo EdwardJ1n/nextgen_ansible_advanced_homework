@@ -21,6 +21,9 @@
       - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
       - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
 
+  - name: Refresh inventory to ensure new instances exist in inventory
+    meta: refresh_inventory
+    
   - name: Create apps group
     add_host: hostname="{{ item }}" groups=apps
     with_items: "{{ groups.tag_AnsibleGroup_apps }}"
@@ -33,27 +36,21 @@
     add_host: hostname="{{ item }}" groups=db
     with_items: "{{ groups.tag_AnsibleGroup_appdbs }}"
 
-# - name: Test play against In-memory inventory
-#   hosts: apps frontend db
+# - name: Setup Repos
+#   hosts: apps:frontend:db
 #   gather_facts: false
+#   become: true
+#   tags:
+#     - common
+
 #   tasks:
-#     - ping:
-
-- name: Setup Repos
-  hosts: apps:frontend:db
-  gather_facts: false
-  become: true
-  tags:
-    - common
-
-  tasks:
-    - name: Copy repo file
-      copy:
-        src: ../files/open_three-tier-app.repo
-        dest: /etc/yum.repos.d/open_three-tier-app.repo
+#     - name: Copy repo file
+#       copy:
+#         src: ../files/open_three-tier-app.repo
+#         dest: /etc/yum.repos.d/open_three-tier-app.repo
  
-- import_playbook: provision_database_tier.yml
-- import_playbook: provision_app_tier.yml
-- import_playbook: provision_load_balancer_tier.yml
+# - import_playbook: provision_database_tier.yml
+# - import_playbook: provision_app_tier.yml
+# - import_playbook: provision_load_balancer_tier.yml
 
 ...
