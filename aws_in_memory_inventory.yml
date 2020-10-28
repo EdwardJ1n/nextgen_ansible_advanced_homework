@@ -1,4 +1,5 @@
 ---
+- name: Test on AWS
   hosts: localhost
   gather_facts: false
   tasks:
