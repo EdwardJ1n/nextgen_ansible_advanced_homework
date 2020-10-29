@@ -1,0 +1,14 @@
+- name: List host from Ansible Tower
+  hosts: localhost
+  gather_facts: false
+  tasks: 
+  - name: Run tower-cli command
+    command: |
+      tower-cli host list --group tag_AnsibleGroup_frontends -f json
+    register: tower_host_info
+
+  - set_fact:
+      tower_host_vars: "{{ tower_host_info.stdout | from_json }}"
+
+  - debug: 
+      msg: "{{ tower_host_vars.results[0].name }}"

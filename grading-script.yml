@@ -27,7 +27,7 @@
 
 #  - debug: var=osp_instance
 
-  - name: Access website
+  - name: Access website for QA
     uri:
       url: "http://{{ item.public_v4 }}"
       status_code: 200
@@ -45,30 +45,22 @@
 
   
 - hosts: localhost
-  vars:
-    ANSIBLE_ADVANCE_GUID: "{{ lookup('env','THREE_TIER_GUID') }}"
   gather_facts: false
-  tasks:
-  - name: Gather Facts from aws
-    ec2_instance_facts:
-      region: us-east-1
-      filters:
-        "tag:owner": xujin@redhat.com
-    register: ec2_instances
+  tasks: 
+  - name: Run tower-cli command
+    command: |
+      tower-cli host list --group tag_AnsibleGroup_frontends -f json
+    register: tower_host_info
 
-  - name: Create In Memory Inventory
-    add_host:
-       group: "{{item.0}}"
-       hostname: "{{item.2}}"
-       ansible_host: "{{item.1}}"
-    with_together:
-      - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
-      - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
-      - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
+  - set_fact:
+      tower_host_vars: "{{ tower_host_info.stdout | from_json }}"
 
-  - name: Access website
+  - debug: 
+      msg: "{{ tower_host_vars.results[0].name }}"
+
+  - name: Access website for PROD
     uri:
-      url: "http://{{ groups.tag_AnsibleGroup_frontends[0] }}"
+      url: "http://{{ tower_host_vars.results[0].name }}"
       status_code: 200
       return_content: yes
     register: prod_webpage
