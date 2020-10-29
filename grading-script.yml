@@ -29,7 +29,7 @@
 
   - name: Access website for QA
     uri:
-      url: "http://{{ item.public_v4 }}"
+      url: "http://{{ item.public_v4 }}/ping"
       status_code: 200
       return_content: yes
     when: 'item.hostname == "frontend1"'
@@ -37,11 +37,11 @@
     register: qa_webpage
     ignore_errors: yes
 
-#  - debug: var=qa_webpage
+  - debug: var=qa_webpage
 
   - name: Fail
     fail:
-    when: "'ansible' not in qa_webpage.results[0].content" 
+    when: "'alive' not in qa_webpage.results[0].content" 
 
   
 - hosts: localhost
@@ -60,7 +60,7 @@
 
   - name: Access website for PROD
     uri:
-      url: "http://{{ tower_host_vars.results[0].name }}"
+      url: "http://{{ tower_host_vars.results[0].name }}/ping"
       status_code: 200
       return_content: yes
     register: prod_webpage
@@ -69,7 +69,7 @@
 
   - name: Fail
     fail:
-    when: "'ansible' not in prod_webpage.content" 
+    when: "'alive' not in prod_webpage.content" 
 
   - name: Success
     debug: msg="Congrats Yours HW Assignment is completed"
