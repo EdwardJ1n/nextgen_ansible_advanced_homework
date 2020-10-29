@@ -25,8 +25,7 @@
     debug: "{{ openstack_info.openstack_servers | length }}"
     register: osp_instance
 
-  - debug: var=osp_instance
-
+#  - debug: var=osp_instance
 
   - name: Access website
     uri:
@@ -50,9 +49,26 @@
     ANSIBLE_ADVANCE_GUID: "{{ lookup('env','THREE_TIER_GUID') }}"
   gather_facts: false
   tasks:
+  - name: Gather Facts from aws
+    ec2_instance_facts:
+      region: us-east-1
+      filters:
+        "tag:owner": xujin@redhat.com
+    register: ec2_instances
+
+  - name: Create In Memory Inventory
+    add_host:
+       group: "{{item.0}}"
+       hostname: "{{item.2}}"
+       ansible_host: "{{item.1}}"
+    with_together:
+      - "{{ ec2_instances.instances | map(attribute='tags.AnsibleGroup')| list }}"
+      - "{{ ec2_instances.instances | map(attribute='public_ip_address')| list }}"
+      - "{{ ec2_instances.instances | map(attribute='tags.Name')| list }}"
+
   - name: Access website
     uri:
-      url: "http://frontend1.{{ ANSIBLE_ADVANCE_GUID }}.example.opentlc.com"
+      url: "http://{{ groups.tag_AnsibleGroup_frontends[0] }}"
       status_code: 200
       return_content: yes
     register: prod_webpage
